@@ -1,8 +1,11 @@
 package grifts
 
 import (
+	"github.com/gofrs/uuid"
 	"github.com/markbates/grift/grift"
 )
+
+var db = make(map[uuid.UUID]models.user)
 
 var _ = grift.Namespace("db", func() {
 

@@ -11,3 +11,9 @@ import (
 func HomeHandler(c buffalo.Context) error {
 	return c.Render(http.StatusOK, r.JSON(map[string]string{"message": "Welcome to Buffalo!"}))
 }
+
+func AboutHandler(c buffalo.Context) error {
+	name := c.Param("name")
+	c.Set("name", name)
+	return c.Render(http.StatusOK, r.JSON(name))
+}

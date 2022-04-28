@@ -12,8 +12,12 @@ import (
 
 	"github.com/gobuffalo/buffalo-pop/v2/pop/popmw"
 	contenttype "github.com/gobuffalo/mw-contenttype"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/gobuffalo/x/sessions"
 	"github.com/rs/cors"
+	// "github.com/gobuffalo/gocraft-work-adapter"
+	// "github.com/gomodule/redigo/redis"
+	// // "github.com/gobuffalo/buffalo/Worker"
 )
 
 // ENV is used to help switch settings based on where the
@@ -61,6 +65,48 @@ func App() *buffalo.App {
 		app.Use(popmw.Transaction(models.DB))
 
 		app.GET("/", HomeHandler)
+		app.GET("/about/{name}", AboutHandler)
+
+		//app.POST("/user", UserHandler)
+
+		//app.Resource("/details", DetailsReurce{})
+
+		app.GET("/todos/index", TodoIndex)
+		app.POST("/todos/add", TodoAdd)
+		app.POST("/todos/{id}", TodoShow)
+
+		app.GET("/students/index", StudentIndex)
+		app.POST("/students/add", StudentAdd)
+		app.DELETE("/students/{id}/delete", StudentDelete)
+		app.PUT("/students/{id}/update", StudentUpdate)
+		app.GET("/students/{id}", StudentShow)
+
+		app.GET("/laptops/index", LaptopIndex)
+		app.POST("/laptops/add", LaptopAdd)
+		app.DELETE("/laptops/{id}/delete", LaptopDelete)
+		app.GET("/laptops/{id}", LaptopShow)
+
+		app.GET("/signin", Signin)
+
+		//app.Resource("/laptops", LaptopsResource{})
+		//AuthMiddlewares
+		app.Use(SetCurrentUser)
+		app.Use(Authorize)
+
+		//Routes for Auth
+		auth := app.Group("/auth")
+		auth.GET("/", AuthLanding)
+		auth.GET("/new", AuthNew)
+		auth.POST("/", AuthCreate)
+		auth.DELETE("/", AuthDestroy)
+		auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate)
+
+		//Routes for User registration
+		users := app.Group("/users")
+		users.GET("/new", UsersNew)
+		users.POST("/", UsersCreate)
+		users.Middleware.Remove(Authorize)
+
 	}
 
 	return app
